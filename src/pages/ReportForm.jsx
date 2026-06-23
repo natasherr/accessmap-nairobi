@@ -37,7 +37,7 @@ function StepBar({ step }) {
   )
 }
 
-function VenueCard({ venue, selected, onSelect }) {
+export function VenueCard({ venue, selected, onSelect }) {
   const activeBadges = BADGES.filter(b => venue.accessibility[b.key])
   return (
     <div onClick={onSelect} className={`border rounded-xl p-4 cursor-pointer mb-2 transition-all ${selected ? 'border-[#1B6B3A] bg-green-50 shadow-[0_0_0_3px_#1B6B3A18]' : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
@@ -139,7 +139,7 @@ function Step1({ venues, state, setState }) {
           setState(s => ({ ...s, error: '', step: 2 }))
         }}
         className="mt-4 w-full p-3.5 bg-[#1B6B3A] text-white rounded-xl font-semibold text-sm hover:bg-[#145A2B] transition-colors disabled:opacity-40 disabled:cursor-not-allowed">
-        Continue with selected venue →
+        Continue with selected venue
       </button>
     </div>
   )
@@ -170,10 +170,10 @@ function Step2({ state, setState, onSaveNewVenue }) {
           </div>
         </div>
         <div className="flex gap-3 mt-6">
-          <button onClick={goBack} className="flex-1 p-3 border border-gray-300 rounded-xl text-gray-600 font-semibold text-sm hover:bg-gray-50">← Back</button>
+          <button onClick={goBack} className="flex-1 p-3 border border-gray-300 rounded-xl text-black font-semibold text-sm hover:bg-gray-50"> Back</button>
           <button onClick={() => setState(s => ({ ...s, step: 3 }))}
             className="flex-[2] p-3 bg-[#1B6B3A] text-white rounded-xl font-semibold text-sm hover:bg-[#145A2B]">
-            Confirm & continue →
+            Confirm & continue
           </button>
         </div>
       </div>
@@ -227,10 +227,10 @@ function Step2({ state, setState, onSaveNewVenue }) {
         </div>
       )}
       <div className="flex gap-3">
-        <button onClick={goBack} className="flex-1 p-3 border border-gray-300 rounded-xl text-gray-600 font-semibold text-sm hover:bg-gray-50">← Back</button>
+        <button onClick={goBack} className="flex-1 p-3 border border-gray-300 rounded-xl text-black font-semibold text-sm hover:bg-gray-50"> Back</button>
         <button disabled={!valid} onClick={onSaveNewVenue}
           className="flex-[2] p-3 bg-[#1B6B3A] text-white rounded-xl font-semibold text-sm hover:bg-[#145A2B] disabled:opacity-40 disabled:cursor-not-allowed">
-          Save & continue →
+          Save & continue
         </button>
       </div>
     </div>
@@ -294,17 +294,17 @@ function Step3({ state, setState }) {
       )}
       <div className="flex gap-3">
         <button onClick={() => setState(s => ({ ...s, step: 2 }))}
-          className="flex-1 p-3 border border-gray-300 rounded-xl text-gray-600 font-semibold text-sm hover:bg-gray-50">← Back</button>
+          className="flex-1 p-3 border border-gray-300 rounded-xl text-gray-900 font-semibold text-sm hover:bg-gray-50"> Back</button>
         <button disabled={!valid} onClick={() => setState(s => ({ ...s, step: 4 }))}
           className="flex-[2] p-3 bg-[#1B6B3A] text-white rounded-xl font-semibold text-sm hover:bg-[#145A2B] disabled:opacity-40 disabled:cursor-not-allowed">
-          Review & confirm →
+          Review & confirm
         </button>
       </div>
     </div>
   )
 }
 
-function Step4({ state, onSubmit, setState}) {
+function Step4({ state, onSubmit, setState }) {
   const v = state.selectedVenue
   const r = state.report
   const accOn = BADGES.filter(b => r.accessibility[b.key])
@@ -363,7 +363,7 @@ function Step4({ state, onSubmit, setState}) {
       </div>
 
       <div className="flex gap-3">
-        <button onClick={() => setState(s => ({ ...s, step: 3 }))} className="flex-1 p-3 border border-gray-300 rounded-xl text-gray-600 font-semibold text-sm hover:bg-gray-50">← Back</button>
+        <button onClick={() => setState(s => ({ ...s, step: 3 }))} className="flex-1 p-3 border border-gray-300 rounded-xl text-gray-900 font-semibold text-sm hover:bg-gray-50"> Back</button>
         <button onClick={onSubmit}
           className="flex-[2] p-3 bg-[#1B6B3A] text-white rounded-xl font-semibold text-sm hover:bg-[#145A2B] flex items-center justify-center gap-2">
           <Send className="w-4 h-4" /> Submit report
@@ -426,6 +426,8 @@ export default function ReportForm() {
 
   return (
     <div className="min-h-screen bg-[#E8F5EC] p-6">
+      
+
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }} className="max-w-3xl mx-auto">
 
@@ -434,7 +436,9 @@ export default function ReportForm() {
 
         <StepBar step={state.step} />
 
-        <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
+
+
+        <div className="bg-white p-8 shadow-sm border border-gray-100">
           {state.step === 1 && (
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }} className="max-w-3xl mx-auto">
