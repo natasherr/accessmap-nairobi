@@ -7,27 +7,26 @@ import { BADGES, DEFAULT_ACCESSIBILITY } from '../constants/badges'
 import { NAIROBI_AREAS } from '../constants/areas'
 
 const STEPS = ['Location', 'Venue', 'Report', 'Confirm']
-const CATEGORIES = ['hospital','mall','museum','restaurant','school','government','transport','hotel','other']
+const CATEGORIES = ['hospital', 'mall', 'museum', 'restaurant', 'school', 'government', 'transport', 'hotel', 'other']
 const RATING_LABELS = { 1: 'Poor', 2: 'Fair', 3: 'Good', 4: 'Very good', 5: 'Excellent' }
 const EMPTY_REPORT = { rating: 0, description: '', visitedAt: '', accessibility: { ...DEFAULT_ACCESSIBILITY } }
 
-// ── Sub-components ────────────────────────────────────────────────
+//  Sub-components 
 
 function StepBar({ step }) {
   return (
     <div className="flex items-center justify-between relative mb-8 mt-4">
       <div className="absolute left-0 right-0 top-1/2 h-0.5 bg-gray-200 -translate-y-1/2" />
       <motion.div className="absolute left-0 top-1/2 h-0.5 bg-[#1B6B3A] -translate-y-1/2"
-        animate={{ width: `${((step - 1) / 3) * 100}%` }} transition={{ duration: 0.7 }} />
+        animate={{ width: `${((step - 1) / 3) * 100}%` }} transition={{ duration: 0.5 }} />
       {STEPS.map((label, i) => {
         const num = i + 1
         return (
           <motion.div key={num} initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }} transition={{ delay: num * 0.1 }}
             className="relative z-10 flex flex-col items-center gap-1.5">
-            <div className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold text-sm transition-all duration-300 ${
-              step >= num ? 'bg-[#1B6B3A] text-white' : 'bg-gray-200 text-gray-500'
-            } ${step === num ? 'ring-4 ring-[#1B6B3A22]' : ''}`}>
+            <div className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold text-sm transition-all duration-300 ${step >= num ? 'bg-[#1B6B3A] text-white' : 'bg-gray-200 text-gray-500'
+              } ${step === num ? 'ring-4 ring-[#1B6B3A22]' : ''}`}>
               {step > num ? <CheckCircle2 className="w-5 h-5" /> : num}
             </div>
             <span className={`text-xs font-medium ${step >= num ? 'text-[#1B6B3A]' : 'text-gray-400'}`}>{label}</span>
@@ -41,17 +40,15 @@ function StepBar({ step }) {
 function VenueCard({ venue, selected, onSelect }) {
   const activeBadges = BADGES.filter(b => venue.accessibility[b.key])
   return (
-    <div onClick={onSelect} className={`border rounded-xl p-4 cursor-pointer mb-2 transition-all ${
-      selected ? 'border-[#1B6B3A] bg-green-50 shadow-[0_0_0_3px_#1B6B3A18]' : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
-    }`}>
+    <div onClick={onSelect} className={`border rounded-xl p-4 cursor-pointer mb-2 transition-all ${selected ? 'border-[#1B6B3A] bg-green-50 shadow-[0_0_0_3px_#1B6B3A18]' : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
+      }`}>
       <div className="flex justify-between items-start gap-2">
         <div>
           <div className="font-semibold text-gray-900">{venue.name}</div>
           <div className="text-sm text-gray-500 mt-0.5">{venue.area} · {venue.address}</div>
           <div className="text-xs text-gray-400 uppercase tracking-wide mt-1">{venue.category}</div>
         </div>
-        <div className={`w-5 h-5 rounded-full border-2 flex-shrink-0 flex items-center justify-center mt-0.5 transition-all ${
-          selected ? 'bg-[#1B6B3A] border-[#1B6B3A]' : 'border-gray-300'}`}>
+        <div className={`w-5 h-5 rounded-full border-2 flex-shrink-0 flex items-center justify-center mt-0.5 transition-all ${selected ? 'bg-[#1B6B3A] border-[#1B6B3A]' : 'border-gray-300'}`}>
           {selected && <CheckCircle2 className="w-3 h-3 text-white" />}
         </div>
       </div>
@@ -91,13 +88,13 @@ function StarRating({ value, onChange }) {
   )
 }
 
-// ── Step screens ──────────────────────────────────────────────────
+//  Step screens 
 
 function Step1({ venues, state, setState }) {
   const filtered = state.searchText.trim()
     ? venues.filter(v =>
-        v.name.toLowerCase().includes(state.searchText.toLowerCase()) ||
-        v.area.toLowerCase().includes(state.searchText.toLowerCase()))
+      v.name.toLowerCase().includes(state.searchText.toLowerCase()) ||
+      v.area.toLowerCase().includes(state.searchText.toLowerCase()))
     : []
 
   return (
@@ -118,9 +115,9 @@ function Step1({ venues, state, setState }) {
           {filtered.length === 0
             ? <p className="text-sm text-gray-400 py-2">No venues found for "{state.searchText}"</p>
             : filtered.map(v => (
-                <VenueCard key={v.id} venue={v} selected={state.selectedVenue?.id === v.id}
-                  onSelect={() => setState(s => ({ ...s, selectedVenue: v, mode: 'existing', error: '' }))} />
-              ))
+              <VenueCard key={v.id} venue={v} selected={state.selectedVenue?.id === v.id}
+                onSelect={() => setState(s => ({ ...s, selectedVenue: v, mode: 'existing', error: '' }))} />
+            ))
           }
         </div>
       )}
@@ -165,9 +162,9 @@ function Step2({ state, setState, onSaveNewVenue }) {
           <div className="flex flex-wrap gap-2">
             {activeBadges.length
               ? activeBadges.map(b => (
-                  <span key={b.key} className={`text-xs px-2.5 py-1 rounded-full font-medium ${b.colorClass}`}>
-                    {b.emoji} {b.label}
-                  </span>))
+                <span key={b.key} className={`text-xs px-2.5 py-1 rounded-full font-medium ${b.colorClass}`}>
+                  {b.emoji} {b.label}
+                </span>))
               : <span className="text-sm text-gray-400">None recorded yet</span>
             }
           </div>
@@ -279,9 +276,8 @@ function Step3({ state, setState }) {
         <p className="text-sm text-gray-400 mb-3">Tick only what you personally saw or used during your visit.</p>
         <div className="flex flex-wrap gap-2">
           {BADGES.map(b => (
-            <label key={b.key} className={`flex items-center gap-1.5 text-sm cursor-pointer px-3 py-1.5 rounded-lg border transition-colors ${
-              r.accessibility[b.key] ? 'bg-green-50 border-[#1B6B3A] text-[#1B6B3A]' : 'bg-gray-50 border-gray-200 text-gray-500'
-            }`}>
+            <label key={b.key} className={`flex items-center gap-1.5 text-sm cursor-pointer px-3 py-1.5 rounded-lg border transition-colors ${r.accessibility[b.key] ? 'bg-green-50 border-[#1B6B3A] text-[#1B6B3A]' : 'bg-gray-50 border-gray-200 text-gray-500'
+              }`}>
               <input type="checkbox" checked={r.accessibility[b.key]}
                 onChange={e => updateReport('accessibility', { ...r.accessibility, [b.key]: e.target.checked })}
                 className="accent-[#1B6B3A]" />
@@ -308,7 +304,7 @@ function Step3({ state, setState }) {
   )
 }
 
-function Step4({ state, onSubmit }) {
+function Step4({ state, onSubmit, setState}) {
   const v = state.selectedVenue
   const r = state.report
   const accOn = BADGES.filter(b => r.accessibility[b.key])
@@ -377,7 +373,7 @@ function Step4({ state, onSubmit }) {
   )
 }
 
-// ── Main component ────────────────────────────────────────────────
+//  Main component 
 
 const INITIAL_STATE = {
   step: 1, mode: null, selectedVenue: null,
@@ -417,7 +413,7 @@ export default function ReportForm() {
           <CheckCircle2 className="w-16 h-16 text-[#1B6B3A] mx-auto mb-4" />
           <h2 className="text-xl font-bold text-gray-900 mb-2">Report submitted</h2>
           <p className="text-sm text-gray-500 mb-6">
-            Thanks for helping make <span className="font-semibold text-gray-700">{state.selectedVenue?.name}</span> easier to find for everyone.
+            Thanks for enlightening others on <span className="font-semibold text-gray-700">{state.selectedVenue?.name}'s</span> accessibility.
           </p>
           <button onClick={() => setState(INITIAL_STATE)}
             className="px-6 py-3 bg-[#1B6B3A] text-white rounded-xl font-semibold text-sm hover:bg-[#145A2B] flex items-center gap-2 mx-auto">
@@ -439,10 +435,30 @@ export default function ReportForm() {
         <StepBar step={state.step} />
 
         <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
-          {state.step === 1 && <Step1 venues={venues} state={state} setState={setState} />}
-          {state.step === 2 && <Step2 state={state} setState={setState} onSaveNewVenue={handleSaveNewVenue} />}
-          {state.step === 3 && <Step3 state={state} setState={setState} />}
-          {state.step === 4 && <Step4 state={state} onSubmit={handleSubmit} />}
+          {state.step === 1 && (
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }} className="max-w-3xl mx-auto">
+              <Step1 venues={venues} state={state} setState={setState} />
+            </motion.div>
+          )}
+          {state.step === 2 && (
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }} className="max-w-3xl mx-auto">
+              <Step2 state={state} setState={setState} onSaveNewVenue={handleSaveNewVenue} />
+            </motion.div>
+          )}
+          {state.step === 3 && (
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }} className="max-w-3xl mx-auto">
+              <Step3 state={state} setState={setState} />
+            </motion.div>
+          )}
+          {state.step === 4 && (
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }} className="max-w-3xl mx-auto">
+              < Step4 state={state} onSubmit={handleSubmit} setState={setState} />
+            </motion.div>
+          )}
         </div>
       </motion.div>
     </div>
