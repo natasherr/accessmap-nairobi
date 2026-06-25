@@ -5,6 +5,7 @@ import { useVenues } from '../hooks/useVenues'
 import { useReports } from '../hooks/useReports'
 import { BADGES, DEFAULT_ACCESSIBILITY } from '../constants/badges'
 import { NAIROBI_AREAS } from '../constants/areas'
+import { Link } from 'react-router-dom'
 
 const STEPS = ['Location', 'Venue', 'Report', 'Confirm']
 const CATEGORIES = ['hospital', 'mall', 'museum', 'restaurant', 'school', 'government', 'transport', 'hotel', 'other']
@@ -415,10 +416,17 @@ export default function ReportForm() {
           <p className="text-sm text-gray-500 mb-6">
             Thanks for enlightening others on <span className="font-semibold text-gray-700">{state.selectedVenue?.name}'s</span> accessibility.
           </p>
-          <button onClick={() => setState(INITIAL_STATE)}
-            className="px-6 py-3 bg-[#1B6B3A] text-white rounded-xl font-semibold text-sm hover:bg-[#145A2B] flex items-center gap-2 mx-auto">
-            <Plus className="w-4 h-4" /> Submit another report
-          </button>
+          <div className='flex gap-2'>
+            <button onClick={() => setState(INITIAL_STATE)}
+              className="px-3 py-2 bg-[#1B6B3A] text-white rounded-xl font-semibold text-sm hover:bg-[#145A2B] flex items-center gap-2 mx-auto">
+              <Plus className="w-4 h-4" /> Submit another report
+            </button>
+            <Link to={"/"}>
+              <button className='px-3 py-2 bg-[#1B6B3A] text-white rounded-xl font-semibold text-sm hover:bg-[#145A2B] flex items-center gap-2 mx-auto'>
+                Go back to the home page
+              </button>
+            </Link>
+          </div>
         </div>
       </div>
     )
@@ -426,7 +434,7 @@ export default function ReportForm() {
 
   return (
     <div className="min-h-screen bg-[#E8F5EC] p-6">
-      
+
 
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }} className="max-w-3xl mx-auto">
