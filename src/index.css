@@ -9,4 +9,19 @@
   body { background: white; }
   
   .bg-white { box-shadow: none; border: 1px solid #e5e7eb; }
+
+}
+/* Import Inter font from Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+/* Focus ring for keyboard accessibility */
+*:focus-visible {
+  outline: 2px solid #1B6B3A;
+  outline-offset: 2px;
+}
+
+/* Print styles for venue cards */
+@media print {
+  nav, footer, button { display: none !important; }
+  body { background: white; color: black; }
 }
