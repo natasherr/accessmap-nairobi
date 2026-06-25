@@ -19,7 +19,7 @@ export default function AccessBadge({ emoji, label, colorClass, isPresent }) {
       `}
     >
       <span aria-hidden="true">
-        {isPresent ? emoji : '–'}
+        {emoji}
       </span>
       {label}
     </span>
