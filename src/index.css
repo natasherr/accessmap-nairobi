@@ -1,9 +1,22 @@
+/* Import Inter font from Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Import Inter font from Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+
+@media print {
+  /* hide nav, sidebar, action buttons */
+  nav, .print\:hidden { display: none !important; }
+  
+  body { background: white; }
+  
+  .bg-white { box-shadow: none; border: 1px solid #e5e7eb; }
+
+}
+
 
 /* Focus ring for keyboard accessibility */
 *:focus-visible {
