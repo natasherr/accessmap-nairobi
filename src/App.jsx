@@ -5,6 +5,7 @@ import VenueDetail from './pages/VenueDetail'
 import ReportForm from './pages/ReportForm'
 import About from './pages/About'
 import NotFound from './pages/NotFound'
+import Footer from './components/Footer' 
 
 export default function App() {
   return (
@@ -17,6 +18,7 @@ export default function App() {
         <Route path="/about"      element={<About />} />
         <Route path="*"           element={<NotFound />} />
       </Routes>
+      <Footer /> 
     </BrowserRouter>
   )
 }
