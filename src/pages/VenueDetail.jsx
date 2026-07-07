@@ -60,7 +60,7 @@ export default function VenueDetail() {
     : null
 
   return (
-    <div className="min-h-screen bg-[#E8F5EC] p-8">
+    <div className="min-h-screen bg-[#E8F5EC] p-8 pt-28">
       <div className="absolute pointer-events-none blur-2xl inset-0 bg-[radial-gradient(circle_at_bottom_left,rgba(27,107,58,0.35),transparent_30%)]"></div>
       <div className="absolute pointer-events-none blur-2xl inset-0 bg-[radial-gradient(circle_at_top_right,rgba(27,66,58,0.35),transparent_30%)]"></div>
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}

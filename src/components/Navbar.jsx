@@ -7,26 +7,31 @@ export default function Navbar() {
 
   const linkClass = ({ isActive }) =>
     isActive
-      ? "text-forest font-semibold border-b-2 border-forest pb-0.5"
-      : "text-ink hover:text-forest transition-colors";
+      ? "text-white transition-all duration-300 hover:-translate-y-0.5"
+      : "text-white/80 hover:text-white transition-all duration-300 hover:-translate-y-0.5";
 
   return (
-    <nav className="bg-offwhite border-b border-gray-200 sticky top-0 z-50">
-      <div className="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
+    // Full‑width fixed bar – edge to edge
+    <div className="fixed top-0 left-0 right-0 z-50 bg-forest/70 backdrop-blur-md border-b border-white/10">
+      {/* Inner container: centers content and adds horizontal padding */}
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
         {/* Logo */}
-        <Link to="/" className="flex items-center gap-2 text-forest font-bold text-lg">
-          <MapPin size={22} className="text-amber" aria-hidden="true" />
+        <Link
+          to="/"
+          className="flex items-center gap-2 text-white font-bold text-xl transition-all duration-300 hover:-translate-y-0.5 hover:opacity-90"
+        >
+          <MapPin size={24} className="text-amber transition-transform duration-300 hover:rotate-12" aria-hidden="true" />
           <span>AccessMap Nairobi</span>
         </Link>
 
         {/* Desktop links */}
-        <div className="hidden md:flex items-center gap-6 text-sm">
+        <div className="hidden md:flex items-center gap-6 text-base">
           <NavLink to="/" end className={linkClass}>Home</NavLink>
           <NavLink to="/directory" className={linkClass}>Directory</NavLink>
           <NavLink to="/about" className={linkClass}>About</NavLink>
           <NavLink
             to="/report"
-            className="bg-forest text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-green-800 transition-colors"
+            className="group bg-amber text-ink px-4 py-2 rounded-full text-base font-medium transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-amber/40 hover:bg-yellow-400 active:translate-y-0"
           >
             + Report a Venue
           </NavLink>
@@ -34,7 +39,7 @@ export default function Navbar() {
 
         {/* Mobile hamburger */}
         <button
-          className="md:hidden text-ink"
+          className="md:hidden text-white transition-all duration-300 hover:scale-110 active:scale-95"
           onClick={() => setMenuOpen(!menuOpen)}
           aria-label={menuOpen ? "Close menu" : "Open menu"}
         >
@@ -42,21 +47,21 @@ export default function Navbar() {
         </button>
       </div>
 
-      {/* Mobile dropdown */}
+      {/* Mobile dropdown – also full‑width, no rounded corners */}
       {menuOpen && (
-        <div className="md:hidden px-4 pb-4 flex flex-col gap-3 text-sm border-t border-gray-100 pt-3">
+        <div className="md:hidden bg-forest/70 backdrop-blur-md border-b border-white/10 px-4 sm:px-6 py-4 flex flex-col gap-3 text-base">
           <NavLink to="/" end className={linkClass} onClick={() => setMenuOpen(false)}>Home</NavLink>
           <NavLink to="/directory" className={linkClass} onClick={() => setMenuOpen(false)}>Directory</NavLink>
           <NavLink to="/about" className={linkClass} onClick={() => setMenuOpen(false)}>About</NavLink>
           <NavLink
             to="/report"
-            className="bg-forest text-white px-4 py-2 rounded-lg text-sm font-medium text-center"
+            className="bg-amber text-ink px-4 py-2 rounded-full text-base font-medium text-center transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg hover:bg-yellow-400 active:translate-y-0"
             onClick={() => setMenuOpen(false)}
           >
             + Report a Venue
           </NavLink>
         </div>
       )}
-    </nav>
+    </div>
   );
 }
