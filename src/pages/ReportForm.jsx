@@ -409,7 +409,7 @@ export default function ReportForm() {
 
   if (state.submitted) {
     return (
-      <div className="min-h-screen bg-[#E8F5EC] p-6 flex items-center justify-center">
+      <div className="min-h-screen bg-[#E8F5EC] p-6 pt-28 flex items-center justify-center">
         <div className="bg-white rounded-2xl p-12 shadow-sm border border-gray-100 text-center max-w-md w-full">
           <CheckCircle2 className="w-16 h-16 text-[#1B6B3A] mx-auto mb-4" />
           <h2 className="text-xl font-bold text-gray-900 mb-2">Report submitted</h2>
@@ -433,7 +433,7 @@ export default function ReportForm() {
   }
 
   return (
-    <div className="min-h-screen bg-[#E8F5EC] p-6">
+    <div className="min-h-screen bg-[#E8F5EC] p-6 pt-28">
 
 
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}

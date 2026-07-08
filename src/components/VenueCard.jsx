@@ -18,13 +18,16 @@ export default function VenueCard({ venue, reports }) {
 
   return (
     <article
-      className="bg-white rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-200 focus-within:ring-2 focus-within:ring-forest flex flex-col"
+      className="bg-white rounded-2xl shadow-sm border border-gray-100 
+                 hover:shadow-xl hover:shadow-black/10 hover:-translate-y-1 hover:border-forest/20
+                 transition-all duration-300 focus-within:ring-2 focus-within:ring-forest 
+                 flex flex-col group"
       aria-label={`Venue: ${venue.name}`}
     >
       <div className="p-4 border-b border-gray-100">
         <div className="flex items-start justify-between gap-2">
           <div>
-            <h3 className="text-base font-semibold text-ink leading-tight">
+            <h3 className="text-base font-semibold text-ink leading-tight group-hover:text-forest transition-colors duration-300">
               {venue.name}
             </h3>
             <p className="text-sm text-gray-500 mt-0.5 flex items-center gap-1">
@@ -68,16 +71,24 @@ export default function VenueCard({ venue, reports }) {
       <div className="p-4 pt-0 flex gap-2">
         <Link
           to={`/venue/${venue.id}`}
-          className="flex-1 text-center text-sm font-medium bg-forest text-white rounded-xl py-2 px-3 hover:bg-green-800 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-forest focus-visible:ring-offset-2"
+          className="flex-1 text-center text-sm font-medium bg-forest text-white rounded-xl py-2 px-3 
+                     hover:bg-green-800 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-forest/30
+                     transition-all duration-300 focus:outline-none focus-visible:ring-2 
+                     focus-visible:ring-forest focus-visible:ring-offset-2"
         >
           View Details
         </Link>
-        
-          <a href={mapsUrl}
+
+        <a
+          href={mapsUrl}
           target="_blank"
           rel="noopener noreferrer"
           aria-label={`Get directions to ${venue.name} on Google Maps`}
-          className="flex items-center gap-1 text-sm font-medium border border-forest text-forest rounded-xl py-2 px-3 hover:bg-mint transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-forest focus-visible:ring-offset-2"
+          className="flex items-center gap-1 text-sm font-medium border border-forest text-forest 
+                     rounded-xl py-2 px-3 hover:bg-forest hover:text-white hover:-translate-y-0.5
+                     hover:shadow-lg hover:shadow-forest/30
+                     transition-all duration-300 focus:outline-none focus-visible:ring-2 
+                     focus-visible:ring-forest focus-visible:ring-offset-2"
         >
           <MapPin size={14} aria-hidden="true" />
           Directions
