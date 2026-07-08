@@ -12,7 +12,7 @@ export default function Navbar() {
 
   return (
     // Full‑width fixed bar – edge to edge
-    <div className="fixed top-0 left-0 right-0 z-50 bg-forest/70 backdrop-blur-md border-b border-white/10">
+    <div className="relative top-0 left-0 right-0 z-50 bg-forest/70 backdrop-blur-md border-b border-white/10">
       {/* Inner container: centers content and adds horizontal padding */}
       <div className="max-w-5xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
         {/* Logo */}
