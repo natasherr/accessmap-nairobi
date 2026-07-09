@@ -30,17 +30,16 @@ const HOW_STEPS = [
 ];
 
 const CATEGORIES = [
-  { label: "Hospitals",  emoji: "🏥", q: "hospital"  },
-  { label: "Markets",    emoji: "🛒", q: "market"    },
-  { label: "Offices",    emoji: "🏢", q: "office"    },
-  { label: "Schools",    emoji: "🎓", q: "school"    },
-  { label: "Banks",      emoji: "🏦", q: "bank"      },
-  { label: "Malls",      emoji: "🛍️", q: "mall"      },
+  { label: "Hospitals", emoji: "🏥", q: "hospital" },
+  { label: "Markets",   emoji: "🛒", q: "market"   },
+  { label: "Schools",   emoji: "🎓", q: "school"   },
+  { label: "Banks",     emoji: "🏦", q: "bank"     },
+  { label: "Malls",     emoji: "🛍️", q: "mall"     },
 ];
 
 export default function Home() {
-  const [query, setQuery]           = useState("");
-  const [recentVenues, setRecent]   = useState([]);
+  const [query, setQuery]         = useState("");
+  const [recentVenues, setRecent] = useState([]);
 
   useEffect(() => {
     const venues = JSON.parse(localStorage.getItem("accessmap_venues") || "[]");
@@ -93,10 +92,7 @@ export default function Home() {
         </p>
 
         {/* Search */}
-        <form
-          onSubmit={handleSearch}
-          className="flex w-full max-w-xl gap-2"
-        >
+        <form onSubmit={handleSearch} className="flex w-full max-w-xl gap-2">
           <div className="relative flex-1">
             <Search
               size={18}
@@ -113,7 +109,7 @@ export default function Home() {
           </div>
           <button
             type="submit"
-            className="bg-forest text-white px-6 py-4 rounded-xl font-semibold hover:bg-green-800 transition-colors text-sm shadow-lg whitespace-nowrap"
+            className="bg-forest text-white px-6 py-4 rounded-xl font-semibold text-sm shadow-lg whitespace-nowrap transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-forest/40 hover:bg-green-800 active:translate-y-0"
           >
             Search
           </button>
@@ -125,7 +121,7 @@ export default function Home() {
             <Link
               key={cat.q}
               to={`/directory?q=${cat.q}`}
-              className="bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white text-xs px-3 py-1.5 rounded-full border border-white/20 transition-colors"
+              className="bg-white/10 hover:bg-white/30 backdrop-blur-sm text-white text-xs px-3 py-1.5 rounded-full border border-white/20 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg hover:border-white/40"
             >
               {cat.emoji} {cat.label}
             </Link>
@@ -134,7 +130,7 @@ export default function Home() {
 
         {/* Scroll hint */}
         <div
-          className="absolute bottom-8 flex flex-col items-center gap-1 text-white/50 text-xs animate-bounce cursor-pointer"
+          className="absolute bottom-8 flex flex-col items-center gap-1 text-white/50 text-xs animate-bounce cursor-pointer hover:text-white/80 transition-colors"
           onClick={() => document.getElementById('how-it-works').scrollIntoView({ behavior: 'smooth' })}
         >
           <span>Scroll down</span>
@@ -166,7 +162,7 @@ export default function Home() {
           </div>
           <Link
             to="/report"
-            className="shrink-0 bg-ink text-white font-semibold px-6 py-3 rounded-xl hover:bg-gray-800 transition-colors text-sm flex items-center gap-2"
+            className="shrink-0 bg-ink text-white font-semibold px-6 py-3 rounded-xl text-sm flex items-center gap-2 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-black/30 hover:bg-gray-800 active:translate-y-0"
           >
             Submit a venue <ArrowRight size={16} />
           </Link>
@@ -186,7 +182,7 @@ export default function Home() {
             {HOW_STEPS.map((step, i) => (
               <div
                 key={i}
-                className="bg-white rounded-2xl p-6 border border-gray-100 hover:border-forest hover:shadow-md transition-all text-center"
+                className="bg-white rounded-2xl p-6 border border-gray-100 hover:border-forest hover:shadow-lg hover:-translate-y-1 hover:bg-mint transition-all duration-300 text-center cursor-default"
               >
                 <div className="text-4xl mb-4">{step.icon}</div>
                 <h3 className="font-bold text-ink text-sm mb-2">{step.title}</h3>
@@ -209,7 +205,7 @@ export default function Home() {
             </div>
             <Link
               to="/directory"
-              className="text-forest text-sm font-medium flex items-center gap-1 hover:underline"
+              className="text-forest text-sm font-medium flex items-center gap-1 transition-all duration-300 hover:-translate-y-0.5 hover:underline"
             >
               View all <ArrowRight size={14} />
             </Link>
@@ -224,7 +220,7 @@ export default function Home() {
               </p>
               <Link
                 to="/report"
-                className="inline-block bg-forest text-white px-5 py-2.5 rounded-xl text-sm font-medium hover:bg-green-800 transition-colors"
+                className="inline-block bg-forest text-white px-5 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-forest/30 hover:bg-green-800 active:translate-y-0"
               >
                 Submit the first venue
               </Link>
@@ -234,8 +230,8 @@ export default function Home() {
               {recentVenues.map(venue => (
                 <Link
                   key={venue.id}
-                  to={`/venue/${venue.id}`}
-                  className="group block bg-white border border-gray-100 rounded-2xl p-5 hover:border-forest hover:shadow-lg transition-all"
+                  to={`/venue/${venue.slug}`}
+                  className="group block bg-white border border-gray-100 rounded-2xl p-5 transition-all duration-300 hover:border-forest hover:shadow-lg hover:-translate-y-1 active:translate-y-0"
                 >
                   <div className="flex items-start gap-3 mb-3">
                     <div className="w-9 h-9 rounded-xl bg-mint flex items-center justify-center shrink-0">
@@ -278,13 +274,13 @@ export default function Home() {
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <Link
             to="/report"
-            className="bg-amber text-ink font-bold px-8 py-4 rounded-xl hover:opacity-90 transition-opacity text-sm"
+            className="bg-amber text-ink font-bold px-8 py-4 rounded-xl text-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-black/20 hover:opacity-90 active:translate-y-0"
           >
             Submit a Venue Report
           </Link>
           <Link
             to="/directory"
-            className="bg-white/10 border border-white/30 text-white font-semibold px-8 py-4 rounded-xl hover:bg-white/20 transition-colors text-sm"
+            className="bg-white/10 border border-white/30 text-white font-semibold px-8 py-4 rounded-xl text-sm transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/20 hover:shadow-xl hover:shadow-black/20 active:translate-y-0"
           >
             Browse the Directory
           </Link>

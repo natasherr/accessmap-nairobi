@@ -33,7 +33,7 @@ export default function SearchBar({
       {/* Input */}
       <input
         id="venue-search"
-        type="search"
+        type="text"
         value={value}
         onChange={e => onChange(e.target.value)}
         placeholder={placeholder}
@@ -51,10 +51,11 @@ export default function SearchBar({
           onClick={() => onChange('')}
           aria-label="Clear search"
           className="absolute right-3 top-1/2 -translate-y-1/2
-                     text-gray-400 hover:text-ink transition-colors
+                     inline-flex items-center gap-1 text-gray-400 hover:text-ink transition-colors
                      focus:outline-none focus-visible:ring-2 focus-visible:ring-forest rounded"
         >
           <X size={14} aria-hidden="true" />
+          <span className="text-xs">Clear</span>
         </button>
       )}
     </div>

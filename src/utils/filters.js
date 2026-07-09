@@ -10,7 +10,8 @@ export function filterVenues(venues, reports, filters) {
     results = results.filter(
       v =>
         v.name.toLowerCase().includes(query) ||
-        v.area.toLowerCase().includes(query)
+        v.area.toLowerCase().includes(query) ||
+        v.category.toLowerCase().includes(query)
     )
   }
 
