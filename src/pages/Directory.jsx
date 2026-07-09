@@ -1,4 +1,5 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { SlidersHorizontal } from 'lucide-react'
 import { useVenues } from '../hooks/useVenues'
 import { useReports } from '../hooks/useReports'
@@ -7,36 +8,27 @@ import SearchBar from '../components/SearchBar'
 import FilterSidebar, { DEFAULT_FILTERS } from '../components/FilterSidebar'
 import VenueCard from '../components/VenueCard'
 
-/**
- * Directory
- * Main venue listing page — rendered at route /directory
- * Ties together SearchBar, FilterSidebar, and VenueCard.
- *
- * Data flow:
- *  useVenues()  → venues array from localStorage
- *  useReports() → reports array from localStorage
- *  filterVenues(venues, reports, filters) → filtered + sorted results
- *
- * Member C: VenueCard links to /venue/:id — your VenueDetail reads id via useParams()
- * Member D: This page is imported into App.jsx routing — no changes needed there
- */
 export default function Directory() {
   const { venues }   = useVenues()
   const { reports }  = useReports()
 
-  // ── Filter state — keys must match filterVenues() in filters.js exactly ──
   const [filters, setFilters] = useState(DEFAULT_FILTERS)
-
-  // ── Mobile: sidebar open/closed ──
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
-  // ── Run filtering + sorting — only recomputes when venues/reports/filters change ──
+  // ── Read ?q= param from URL and apply as search text on load ──
+  const [searchParams] = useSearchParams()
+  useEffect(() => {
+    const q = searchParams.get('q')
+    if (q) {
+      setFilters(f => ({ ...f, searchText: q }))
+    }
+  }, [])
+
   const filteredVenues = useMemo(
     () => filterVenues(venues, reports, filters),
     [venues, reports, filters]
   )
 
-  // ── Active filter count for mobile badge ──
   const activeFilterCount = [
     filters.area !== 'All areas',
     filters.badges.length > 0,
@@ -44,7 +36,6 @@ export default function Directory() {
     filters.sortBy !== 'recent',
   ].filter(Boolean).length
 
-  // ── Loading state — venues array is empty before localStorage loads ──
   const isLoading = venues.length === 0
 
   return (

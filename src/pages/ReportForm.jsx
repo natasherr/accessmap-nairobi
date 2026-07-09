@@ -155,6 +155,14 @@ function Step2({ state, setState, onSaveNewVenue }) {
     return (
       <div>
         <h3 className="text-xl font-bold text-gray-900 mb-5">Confirm venue</h3>
+
+        {/* Duplicate warning message */}
+        {state.error && (
+          <div className="flex items-center gap-2 text-sm text-amber-700 bg-amber-50 px-3 py-2 rounded-lg mb-4">
+            <AlertTriangle className="w-4 h-4 flex-shrink-0" /> {state.error}
+          </div>
+        )}
+
         <div className="bg-gray-50 border border-gray-200 rounded-xl p-5">
           <div className="font-bold text-lg text-gray-900 mb-0.5">{v.name}</div>
           <div className="text-sm text-gray-500 mb-0.5">{v.address}</div>
@@ -171,8 +179,8 @@ function Step2({ state, setState, onSaveNewVenue }) {
           </div>
         </div>
         <div className="flex gap-3 mt-6">
-          <button onClick={goBack} className="flex-1 p-3 border border-gray-300 rounded-xl text-black font-semibold text-sm hover:bg-gray-50"> Back</button>
-          <button onClick={() => setState(s => ({ ...s, step: 3 }))}
+          <button onClick={goBack} className="flex-1 p-3 border border-gray-300 rounded-xl text-black font-semibold text-sm hover:bg-gray-50">Back</button>
+          <button onClick={() => setState(s => ({ ...s, step: 3, error: '' }))}
             className="flex-[2] p-3 bg-[#1B6B3A] text-white rounded-xl font-semibold text-sm hover:bg-[#145A2B]">
             Confirm & continue
           </button>
@@ -228,7 +236,7 @@ function Step2({ state, setState, onSaveNewVenue }) {
         </div>
       )}
       <div className="flex gap-3">
-        <button onClick={goBack} className="flex-1 p-3 border border-gray-300 rounded-xl text-black font-semibold text-sm hover:bg-gray-50"> Back</button>
+        <button onClick={goBack} className="flex-1 p-3 border border-gray-300 rounded-xl text-black font-semibold text-sm hover:bg-gray-50">Back</button>
         <button disabled={!valid} onClick={onSaveNewVenue}
           className="flex-[2] p-3 bg-[#1B6B3A] text-white rounded-xl font-semibold text-sm hover:bg-[#145A2B] disabled:opacity-40 disabled:cursor-not-allowed">
           Save & continue
@@ -295,7 +303,7 @@ function Step3({ state, setState }) {
       )}
       <div className="flex gap-3">
         <button onClick={() => setState(s => ({ ...s, step: 2 }))}
-          className="flex-1 p-3 border border-gray-300 rounded-xl text-gray-900 font-semibold text-sm hover:bg-gray-50"> Back</button>
+          className="flex-1 p-3 border border-gray-300 rounded-xl text-gray-900 font-semibold text-sm hover:bg-gray-50">Back</button>
         <button disabled={!valid} onClick={() => setState(s => ({ ...s, step: 4 }))}
           className="flex-[2] p-3 bg-[#1B6B3A] text-white rounded-xl font-semibold text-sm hover:bg-[#145A2B] disabled:opacity-40 disabled:cursor-not-allowed">
           Review & confirm
@@ -364,7 +372,7 @@ function Step4({ state, onSubmit, setState }) {
       </div>
 
       <div className="flex gap-3">
-        <button onClick={() => setState(s => ({ ...s, step: 3 }))} className="flex-1 p-3 border border-gray-300 rounded-xl text-gray-900 font-semibold text-sm hover:bg-gray-50"> Back</button>
+        <button onClick={() => setState(s => ({ ...s, step: 3 }))} className="flex-1 p-3 border border-gray-300 rounded-xl text-gray-900 font-semibold text-sm hover:bg-gray-50">Back</button>
         <button onClick={onSubmit}
           className="flex-[2] p-3 bg-[#1B6B3A] text-white rounded-xl font-semibold text-sm hover:bg-[#145A2B] flex items-center justify-center gap-2">
           <Send className="w-4 h-4" /> Submit report
@@ -388,12 +396,26 @@ export default function ReportForm() {
   const { addReport } = useReports()
   const [state, setState] = useState(INITIAL_STATE)
 
+  // ── Duplicate check handled here ──
   const handleSaveNewVenue = () => {
-    const saved = addVenue({
+    const result = addVenue({
       ...state.newVenue,
-      accessibility: { ...DEFAULT_ACCESSIBILITY }, // all false — report fills this in
+      accessibility: { ...DEFAULT_ACCESSIBILITY },
     })
-    setState(s => ({ ...s, selectedVenue: saved, step: 3 }))
+
+    if (result.error) {
+      // Duplicate found — switch to existing venue and show warning
+      setState(s => ({
+        ...s,
+        selectedVenue: result.existing,
+        mode: 'existing',
+        error: `This venue already exists in this area. We've selected it for you.`,
+        step: 2,
+      }))
+      return
+    }
+
+    setState(s => ({ ...s, selectedVenue: result, step: 3 }))
   }
 
   const handleSubmit = () => {
@@ -409,7 +431,7 @@ export default function ReportForm() {
 
   if (state.submitted) {
     return (
-      <div className="min-h-screen bg-[#E8F5EC] p-6 pt-28 flex items-center justify-center">
+      <div className="min-h-screen bg-[#E8F5EC] p-6 flex items-center justify-center">
         <div className="bg-white rounded-2xl p-12 shadow-sm border border-gray-100 text-center max-w-md w-full">
           <CheckCircle2 className="w-16 h-16 text-[#1B6B3A] mx-auto mb-4" />
           <h2 className="text-xl font-bold text-gray-900 mb-2">Report submitted</h2>
@@ -433,9 +455,7 @@ export default function ReportForm() {
   }
 
   return (
-    <div className="min-h-screen bg-[#E8F5EC] p-6 pt-28">
-
-
+    <div className="min-h-screen bg-[#E8F5EC] p-6">
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }} className="max-w-3xl mx-auto">
 
@@ -443,8 +463,6 @@ export default function ReportForm() {
         <p className="text-sm text-gray-500 mb-6">Help others find accessible venues across Nairobi</p>
 
         <StepBar step={state.step} />
-
-
 
         <div className="bg-white p-8 shadow-sm border border-gray-100">
           {state.step === 1 && (
@@ -468,7 +486,7 @@ export default function ReportForm() {
           {state.step === 4 && (
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }} className="max-w-3xl mx-auto">
-              < Step4 state={state} onSubmit={handleSubmit} setState={setState} />
+              <Step4 state={state} onSubmit={handleSubmit} setState={setState} />
             </motion.div>
           )}
         </div>

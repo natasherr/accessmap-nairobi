@@ -21,7 +21,7 @@ export default function About() {
   ];
 
   return (
-    <main className="max-w-3xl mx-auto px-4 py-12 pt-28">
+    <main className="max-w-3xl mx-auto px-4 py-12">
 
       <h1 className="text-3xl font-bold text-ink mb-2">About AccessMap Nairobi</h1>
       <p className="text-gray-500 mb-10">What we are, why we exist, and how to help.</p>

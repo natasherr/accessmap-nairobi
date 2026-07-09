@@ -70,7 +70,7 @@ export default function VenueCard({ venue, reports }) {
 
       <div className="p-4 pt-0 flex gap-2">
         <Link
-          to={`/venue/${venue.id}`}
+          to={`/venue/${venue.slug}`}
           className="flex-1 text-center text-sm font-medium bg-forest text-white rounded-xl py-2 px-3 
                      hover:bg-green-800 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-forest/30
                      transition-all duration-300 focus:outline-none focus-visible:ring-2 
