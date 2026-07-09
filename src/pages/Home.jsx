@@ -133,7 +133,10 @@ export default function Home() {
         </div>
 
         {/* Scroll hint */}
-        <div className="absolute bottom-8 flex flex-col items-center gap-1 text-white/50 text-xs animate-bounce">
+        <div
+          className="absolute bottom-8 flex flex-col items-center gap-1 text-white/50 text-xs animate-bounce cursor-pointer"
+          onClick={() => document.getElementById('how-it-works').scrollIntoView({ behavior: 'smooth' })}
+        >
           <span>Scroll down</span>
           <ChevronRight size={14} className="rotate-90" />
         </div>
@@ -171,7 +174,7 @@ export default function Home() {
       </section>
 
       {/* ── HOW IT WORKS ── */}
-      <section className="py-20 px-4 bg-offwhite">
+      <section id="how-it-works" className="py-20 px-4 bg-offwhite">
         <div className="max-w-4xl mx-auto">
           <p className="text-forest text-sm font-semibold uppercase tracking-wider text-center mb-2">
             How it works
