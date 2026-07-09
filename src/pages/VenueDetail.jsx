@@ -34,15 +34,15 @@ function Stars({ rating, size = 'text-lg' }) {
 }
 
 export default function VenueDetail() {
-  const { id } = useParams()
-  const { venues, getVenueById } = useVenues()
+  const { id: slug } = useParams()
+  const { venues, getVenueBySlug } = useVenues()
   const { getReportsByVenueId, getAverageRating, reports } = useReports()
 
   const [venue, setVenue] = useState(null)
 
   useEffect(() => {
-    if (id) setVenue(getVenueById(id))
-  }, [venues, id])
+    if (slug) setVenue(getVenueBySlug(slug))
+  }, [venues, slug])
 
   if (!venue) return (
     <div className="min-h-screen flex items-center justify-center text-gray-400">
@@ -60,7 +60,7 @@ export default function VenueDetail() {
     : null
 
   return (
-    <div className="min-h-screen bg-[#E8F5EC] p-8 pt-28">
+    <div className="min-h-screen bg-[#E8F5EC] p-8">
       <div className="absolute pointer-events-none blur-2xl inset-0 bg-[radial-gradient(circle_at_bottom_left,rgba(27,107,58,0.35),transparent_30%)]"></div>
       <div className="absolute pointer-events-none blur-2xl inset-0 bg-[radial-gradient(circle_at_top_right,rgba(27,66,58,0.35),transparent_30%)]"></div>
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
