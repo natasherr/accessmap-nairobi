@@ -2,8 +2,6 @@
 
 A community-powered accessibility directory for Nairobi venues — built with React, Vite, and Tailwind CSS.
 
-![AccessMap Nairobi](https://images.unsplash.com/photo-1611348524140-53c9a25263d6?auto=format&fit=crop&w=1200&q=80)
-
 ---
 
 ## About the Project
