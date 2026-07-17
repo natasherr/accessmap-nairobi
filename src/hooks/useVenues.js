@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { getVenues, saveVenues, initStorage } from '../utils/localStorage'
 import { seedVenues } from '../data/seedVenues'
+import {seedReports} from '../data/seedReports'
 
 /*
  * useVenues
@@ -44,7 +45,7 @@ export function useVenues() {
   // On first load, seed the data if it has not been seeded yet,
   // then read all venues from localStorage into state
   useEffect(() => {
-    initStorage(seedVenues)
+    initStorage(seedVenues, seedReports)
     const stored = getVenues()
     setVenues(stored)
   }, [])
