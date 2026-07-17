@@ -4,7 +4,26 @@ import { BADGES } from '../constants/badges'
 import AccessBadge from './AccessBadge'
 import StarRating from './StarRating'
 
+/*
+ * VenueCard
+ * Displays a summary of a single venue in the directory listing.
+ * Shows the venue name, area, category, average star rating,
+ * accessibility badges, and buttons to view details or get directions.
+ *
+ * Props:
+ *  - venue    {object}  A single venue object from localStorage
+ *  - reports  {array}   All community reports for this venue,
+ *                       filtered by venueId before being passed in
+ *
+ * Used by: Directory.jsx
+ */
 export default function VenueCard({ venue, reports }) {
+
+  /*
+   * Calculate the average star rating from all reports for this venue.
+   * Rounded to one decimal place e.g. 3.666 becomes 3.7.
+   * Returns null if there are no reports yet.
+   */
   const avgRating =
     reports.length > 0
       ? Math.round(
@@ -12,6 +31,11 @@ export default function VenueCard({ venue, reports }) {
         ) / 10
       : null
 
+  /*
+   * Build a Google Maps search URL using the venue name.
+   * Opens in a new tab when the user clicks Directions.
+   * No Maps API key is needed for a basic search URL.
+   */
   const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
     venue.name + ' Nairobi'
   )}`
@@ -24,9 +48,11 @@ export default function VenueCard({ venue, reports }) {
                  flex flex-col group"
       aria-label={`Venue: ${venue.name}`}
     >
+      {/* Top section — venue name, area, category, and average rating */}
       <div className="p-4 border-b border-gray-100">
         <div className="flex items-start justify-between gap-2">
           <div>
+            {/* Venue name — turns forest green on card hover using the group class */}
             <h3 className="text-base font-semibold text-ink leading-tight group-hover:text-forest transition-colors duration-300">
               {venue.name}
             </h3>
@@ -35,6 +61,8 @@ export default function VenueCard({ venue, reports }) {
               {venue.area} · {venue.category}
             </p>
           </div>
+
+          {/* Star rating — shows average and report count, or a placeholder if no reports */}
           <div className="flex flex-col items-end shrink-0">
             {avgRating !== null ? (
               <>
@@ -51,6 +79,8 @@ export default function VenueCard({ venue, reports }) {
         </div>
       </div>
 
+      {/* Middle section — accessibility feature badges.
+          Each badge shows whether the feature is present or not. */}
       <div className="p-4 flex-1">
         <p className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-2">
           Accessibility features
@@ -68,7 +98,10 @@ export default function VenueCard({ venue, reports }) {
         </div>
       </div>
 
+      {/* Bottom section — action buttons */}
       <div className="p-4 pt-0 flex gap-2">
+
+        {/* View Details — navigates to the full venue page using the slug URL */}
         <Link
           to={`/venue/${venue.slug}`}
           className="flex-1 text-center text-sm font-medium bg-forest text-white rounded-xl py-2 px-3 
@@ -79,6 +112,7 @@ export default function VenueCard({ venue, reports }) {
           View Details
         </Link>
 
+        {/* Directions — opens Google Maps in a new tab */}
         <a
           href={mapsUrl}
           target="_blank"
@@ -95,6 +129,7 @@ export default function VenueCard({ venue, reports }) {
         </a>
       </div>
 
+      {/* Report count footer — only shown if at least one report exists */}
       {reports.length > 0 && (
         <div className="px-4 pb-3 flex items-center gap-1 text-xs text-gray-400">
           <FileText size={12} aria-hidden="true" />

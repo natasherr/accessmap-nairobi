@@ -3,9 +3,11 @@ import { Search, ArrowRight, MapPin, ChevronRight, Rss } from "lucide-react";
 import { useState, useEffect } from "react";
 import StatsCounter from "../components/StatsCounter";
 
+// Nairobi skyline photo used as the hero and bottom CTA background
 const NAIROBI_PHOTO =
   "https://images.unsplash.com/photo-1611348524140-53c9a25263d6?auto=format&fit=crop&w=1600&q=80";
 
+// Steps shown in the How it works section
 const HOW_STEPS = [
   {
     icon: "🔍",
@@ -29,6 +31,8 @@ const HOW_STEPS = [
   },
 ];
 
+// Category pills shown below the hero search bar.
+// Clicking one navigates to /directory?q=category which pre-filters the results.
 const CATEGORIES = [
   { label: "Hospitals", emoji: "🏥", q: "hospital" },
   { label: "Markets",   emoji: "🛒", q: "market"   },
@@ -37,10 +41,19 @@ const CATEGORIES = [
   { label: "Malls",     emoji: "🛍️", q: "mall"     },
 ];
 
+/*
+ * Home
+ * The landing page of AccessMap Nairobi.
+ * Contains a hero section with search, a stats counter, a CTA banner,
+ * a how it works section, recently added venues, and a bottom CTA.
+ *
+ * Route: /
+ */
 export default function Home() {
   const [query, setQuery]         = useState("");
   const [recentVenues, setRecent] = useState([]);
 
+  // Read the 3 most recently added venues from localStorage on first load
   useEffect(() => {
     const venues = JSON.parse(localStorage.getItem("accessmap_venues") || "[]");
     const sorted = [...venues].sort(
@@ -49,6 +62,7 @@ export default function Home() {
     setRecent(sorted.slice(0, 3));
   }, []);
 
+  // Navigates to the directory page with the search query in the URL
   function handleSearch(e) {
     e.preventDefault();
     if (query.trim()) {
@@ -59,7 +73,7 @@ export default function Home() {
   return (
     <main>
 
-      {/* ── HERO ── */}
+      {/* Hero section — full screen with Nairobi skyline background */}
       <section
         style={{
           backgroundImage: `linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.65)), url(${NAIROBI_PHOTO})`,
@@ -91,7 +105,7 @@ export default function Home() {
           offices and schools — reported by real visitors.
         </p>
 
-        {/* Search */}
+        {/* Search form — submitting navigates to the directory with ?q= in the URL */}
         <form onSubmit={handleSearch} className="flex w-full max-w-xl gap-2">
           <div className="relative flex-1">
             <Search
@@ -115,7 +129,7 @@ export default function Home() {
           </button>
         </form>
 
-        {/* Quick category pills */}
+        {/* Category pills — each one navigates to the directory pre-filtered by category */}
         <div className="flex flex-wrap justify-center gap-2 mt-6">
           {CATEGORIES.map(cat => (
             <Link
@@ -128,7 +142,7 @@ export default function Home() {
           ))}
         </div>
 
-        {/* Scroll hint */}
+        {/* Scroll hint — clicking smoothly scrolls to the how it works section */}
         <div
           className="absolute bottom-8 flex flex-col items-center gap-1 text-white/50 text-xs animate-bounce cursor-pointer hover:text-white/80 transition-colors"
           onClick={() => document.getElementById('how-it-works').scrollIntoView({ behavior: 'smooth' })}
@@ -138,7 +152,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── STATS ── */}
+      {/* Stats section — shows live counts from localStorage */}
       <section className="bg-forest text-white py-12 px-4">
         <div className="max-w-4xl mx-auto">
           <p className="text-green-200 text-sm text-center mb-6 uppercase tracking-wider font-medium">
@@ -148,7 +162,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── SUBMIT CTA BANNER ── */}
+      {/* CTA banner — encourages users to submit a report */}
       <section className="bg-amber py-10 px-4">
         <div className="max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
           <div>
@@ -169,7 +183,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── HOW IT WORKS ── */}
+      {/* How it works section — four step cards explaining the app */}
       <section id="how-it-works" className="py-20 px-4 bg-offwhite">
         <div className="max-w-4xl mx-auto">
           <p className="text-forest text-sm font-semibold uppercase tracking-wider text-center mb-2">
@@ -193,7 +207,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── RECENT VENUES ── */}
+      {/* Recently added venues — reads the 3 newest venues from localStorage */}
       <section className="py-16 px-4 bg-white">
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center justify-between mb-8">
@@ -211,6 +225,7 @@ export default function Home() {
             </Link>
           </div>
 
+          {/* Empty state — shown when no venues exist in localStorage yet */}
           {recentVenues.length === 0 ? (
             <div className="bg-mint rounded-2xl p-12 text-center border-2 border-dashed border-forest/30">
               <MapPin size={40} className="mx-auto mb-3 text-forest/30" />
@@ -254,7 +269,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── BOTTOM CTA ── */}
+      {/* Bottom CTA — encourages users to contribute and browse */}
       <section
         style={{
           backgroundImage: `linear-gradient(rgba(27,107,58,0.92), rgba(27,107,58,0.97)), url(${NAIROBI_PHOTO})`,

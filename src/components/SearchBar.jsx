@@ -1,15 +1,17 @@
 import { Search, X } from 'lucide-react'
 
-/**
+/*
  * SearchBar
- * Controlled search input for filtering venues by name or area.
+ * A controlled text input used to filter venues by name, area, or category.
+ * The parent component (Directory.jsx) owns the search value and passes it
+ * down via props. Every keystroke calls onChange so the directory updates live.
  *
  * Props:
  *  - value       {string}    Current search text (controlled by Directory.jsx)
- *  - onChange    {function}  Called with new string on every keystroke
- *  - placeholder {string}    Input placeholder text
+ *  - onChange    {function}  Called with the new string on every keystroke
+ *  - placeholder {string}    Input placeholder text (has a default value)
  *
- * Used by: Directory.jsx (Member B)
+ * Used by: Directory.jsx
  */
 export default function SearchBar({
   value,
@@ -18,19 +20,23 @@ export default function SearchBar({
 }) {
   return (
     <div className="relative w-full">
-      {/* Visually hidden label for screen readers */}
+
+      {/* Hidden label for screen readers — not visible on screen
       <label htmlFor="venue-search" className="sr-only">
         Search venues
       </label>
 
-      {/* Search icon — left side */}
+      {/* Search icon on the left side of the input — decorative only */}
       <Search
         size={16}
         aria-hidden="true"
         className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
       />
 
-      {/* Input */}
+      {/* Main text input.
+          type="text" is used instead of type="search" to prevent the browser
+          from adding its own native clear button, which would cause two clear
+          buttons to appear at the same time. */}
       <input
         id="venue-search"
         type="text"
@@ -44,7 +50,9 @@ export default function SearchBar({
                    focus-visible:border-forest transition-colors"
       />
 
-      {/* Clear button — only appears when there is text */}
+      {/* Clear button — only appears when the input has text.
+          Clicking it resets the search value to an empty string,
+          which clears the filter and shows all venues again. */}
       {value && (
         <button
           type="button"

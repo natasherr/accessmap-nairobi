@@ -7,17 +7,43 @@ import { BADGES, DEFAULT_ACCESSIBILITY } from '../constants/badges'
 import { NAIROBI_AREAS } from '../constants/areas'
 import { Link } from 'react-router-dom'
 
+/*
+ * ReportForm
+ * A 4-step wizard that allows users to submit an accessibility report
+ * for an existing venue or create a new one.
+ *
+ * Step 1: Search for an existing venue or choose to create a new one
+ * Step 2: Confirm the selected venue or fill in details for a new one
+ * Step 3: Record accessibility features observed and give a star rating
+ * Step 4: Review the report before submitting
+ *
+ * On submission, the report is saved to localStorage via useReports.
+ * If the user tries to add a duplicate venue, they are redirected to
+ * the existing venue instead.
+ *
+ * Route: /report
+ */
+
+// Labels for the four steps shown in the progress bar
 const STEPS = ['Location', 'Venue', 'Report', 'Confirm']
+
+// Venue categories available when creating a new venue
 const CATEGORIES = ['hospital', 'mall', 'museum', 'restaurant', 'school', 'government', 'transport', 'hotel', 'other']
+
+// Maps a numeric rating to a readable label
 const RATING_LABELS = { 1: 'Poor', 2: 'Fair', 3: 'Good', 4: 'Very good', 5: 'Excellent' }
-const EMPTY_REPORT = { rating: 0, description: '', visitedAt: '', accessibility: { ...DEFAULT_ACCESSIBILITY } }
 
-//  Sub-components 
-
+/*
+ * StepBar
+ * Visual progress indicator shown at the top of the form.
+ * Highlights completed steps and the current active step.
+ */
 function StepBar({ step }) {
   return (
     <div className="flex items-center justify-between relative mb-8 mt-4">
+      {/* Grey background line running the full width */}
       <div className="absolute left-0 right-0 top-1/2 h-0.5 bg-gray-200 -translate-y-1/2" />
+      {/* Animated green line that grows as steps are completed */}
       <motion.div className="absolute left-0 top-1/2 h-0.5 bg-[#1B6B3A] -translate-y-1/2"
         animate={{ width: `${((step - 1) / 3) * 100}%` }} transition={{ duration: 0.5 }} />
       {STEPS.map((label, i) => {
@@ -26,6 +52,7 @@ function StepBar({ step }) {
           <motion.div key={num} initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }} transition={{ delay: num * 0.1 }}
             className="relative z-10 flex flex-col items-center gap-1.5">
+            {/* Step circle — green when reached, grey when not yet reached */}
             <div className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold text-sm transition-all duration-300 ${step >= num ? 'bg-[#1B6B3A] text-white' : 'bg-gray-200 text-gray-500'
               } ${step === num ? 'ring-4 ring-[#1B6B3A22]' : ''}`}>
               {step > num ? <CheckCircle2 className="w-5 h-5" /> : num}
@@ -38,6 +65,11 @@ function StepBar({ step }) {
   )
 }
 
+/*
+ * VenueCard
+ * A selectable card shown in the Step 1 search results.
+ * Highlights when selected and shows the venue's accessibility badges.
+ */
 export function VenueCard({ venue, selected, onSelect }) {
   const activeBadges = BADGES.filter(b => venue.accessibility[b.key])
   return (
@@ -49,10 +81,12 @@ export function VenueCard({ venue, selected, onSelect }) {
           <div className="text-sm text-gray-500 mt-0.5">{venue.area} · {venue.address}</div>
           <div className="text-xs text-gray-400 uppercase tracking-wide mt-1">{venue.category}</div>
         </div>
+        {/* Selection indicator circle */}
         <div className={`w-5 h-5 rounded-full border-2 flex-shrink-0 flex items-center justify-center mt-0.5 transition-all ${selected ? 'bg-[#1B6B3A] border-[#1B6B3A]' : 'border-gray-300'}`}>
           {selected && <CheckCircle2 className="w-3 h-3 text-white" />}
         </div>
       </div>
+      {/* Show up to 4 accessibility badges, with a count for any extras */}
       {activeBadges.length > 0 && (
         <div className="flex flex-wrap gap-1.5 mt-3">
           {activeBadges.slice(0, 4).map(b => (
@@ -69,6 +103,11 @@ export function VenueCard({ venue, selected, onSelect }) {
   )
 }
 
+/*
+ * StarRating
+ * An interactive star rating input used in Step 3.
+ * Hovering previews the rating before the user clicks to confirm it.
+ */
 function StarRating({ value, onChange }) {
   const [hovered, setHovered] = useState(0)
   const display = hovered || value
@@ -89,9 +128,13 @@ function StarRating({ value, onChange }) {
   )
 }
 
-//  Step screens 
-
+/*
+ * Step1
+ * Lets the user search for an existing venue by name or area,
+ * or choose to create a brand new venue.
+ */
 function Step1({ venues, state, setState }) {
+  // Filter venues live as the user types in the search box
   const filtered = state.searchText.trim()
     ? venues.filter(v =>
       v.name.toLowerCase().includes(state.searchText.toLowerCase()) ||
@@ -111,6 +154,7 @@ function Step1({ venues, state, setState }) {
           className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#1B6B3A]" />
       </div>
 
+      {/* Show search results or a not found message */}
       {state.searchText.trim() && (
         <div className="mt-2">
           {filtered.length === 0
@@ -127,6 +171,7 @@ function Step1({ venues, state, setState }) {
         <div className="flex-1 h-px bg-gray-200" /><span className="text-sm text-gray-400">or</span><div className="flex-1 h-px bg-gray-200" />
       </div>
 
+      {/* Button to skip search and create a new venue instead */}
       <button onClick={() => setState(s => ({ ...s, mode: 'new', selectedVenue: null, searchText: '', error: '', step: 2 }))}
         className="w-full p-3.5 border-2 border-dashed border-[#1B6B3A] rounded-xl bg-green-50 text-[#1B6B3A] font-semibold text-sm hover:bg-green-100 transition-colors flex items-center justify-center gap-2">
         <Plus className="w-4 h-4" /> Create a new venue
@@ -146,9 +191,15 @@ function Step1({ venues, state, setState }) {
   )
 }
 
+/*
+ * Step2
+ * Shows a summary of the selected existing venue for confirmation,
+ * or a form to fill in details for a new venue.
+ */
 function Step2({ state, setState, onSaveNewVenue }) {
   const goBack = () => setState(s => ({ ...s, step: 1 }))
 
+  // Existing venue — show its details and ask the user to confirm
   if (state.mode === 'existing') {
     const v = state.selectedVenue
     const activeBadges = BADGES.filter(b => v.accessibility[b.key])
@@ -156,7 +207,7 @@ function Step2({ state, setState, onSaveNewVenue }) {
       <div>
         <h3 className="text-xl font-bold text-gray-900 mb-5">Confirm venue</h3>
 
-        {/* Duplicate warning message */}
+        {/* Warning shown if a duplicate venue was detected and auto-selected */}
         {state.error && (
           <div className="flex items-center gap-2 text-sm text-amber-700 bg-amber-50 px-3 py-2 rounded-lg mb-4">
             <AlertTriangle className="w-4 h-4 flex-shrink-0" /> {state.error}
@@ -189,7 +240,7 @@ function Step2({ state, setState, onSaveNewVenue }) {
     )
   }
 
-  // New venue — no accessibility fields here
+  // New venue — form to fill in the basic details before the report step
   const nv = state.newVenue
   const valid = nv.name.trim() && nv.area && nv.address.trim() && nv.category
   const update = (field, value) => setState(s => ({ ...s, newVenue: { ...s.newVenue, [field]: value } }))
@@ -230,6 +281,7 @@ function Step2({ state, setState, onSaveNewVenue }) {
         </div>
       </div>
 
+      {/* Warning shown until all four fields are filled in */}
       {!valid && (
         <div className="flex items-center gap-2 text-sm text-amber-700 bg-amber-50 px-3 py-2 rounded-lg mb-4">
           <AlertTriangle className="w-4 h-4 flex-shrink-0" /> Please fill in all four fields to continue.
@@ -246,6 +298,12 @@ function Step2({ state, setState, onSaveNewVenue }) {
   )
 }
 
+/*
+ * Step3
+ * Lets the user record what accessibility features they personally observed
+ * at the venue, give an overall star rating, add a visit date, and write
+ * an optional description of their experience.
+ */
 function Step3({ state, setState }) {
   const r = state.report
   const valid = r.rating > 0 && r.visitedAt.trim()
@@ -259,11 +317,13 @@ function Step3({ state, setState }) {
         Record what you personally observed at <span className="font-semibold text-gray-700">{state.selectedVenue?.name}</span>.
       </p>
 
+      {/* Star rating input */}
       <div className="mb-5">
         <label className="text-sm font-semibold text-gray-600 block mb-2">Overall rating</label>
         <StarRating value={r.rating} onChange={val => updateReport('rating', val)} />
       </div>
 
+      {/* Date visited — capped at today so future dates cannot be entered */}
       <div className="mb-5">
         <label className="text-sm font-semibold text-gray-600 block mb-1">Date visited</label>
         <input type="date" value={r.visitedAt} max={today}
@@ -271,6 +331,7 @@ function Step3({ state, setState }) {
           className="p-3 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#1B6B3A]" />
       </div>
 
+      {/* Optional description */}
       <div className="mb-5">
         <label className="text-sm font-semibold text-gray-600 block mb-1">
           Description <span className="font-normal text-gray-400">(optional)</span>
@@ -280,6 +341,7 @@ function Step3({ state, setState }) {
           rows={4} className="w-full p-3 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#1B6B3A] resize-none" />
       </div>
 
+      {/* Accessibility feature checkboxes — user ticks only what they personally saw */}
       <div className="mb-5">
         <label className="text-sm font-semibold text-gray-600 block mb-1">Accessibility features observed</label>
         <p className="text-sm text-gray-400 mb-3">Tick only what you personally saw or used during your visit.</p>
@@ -296,6 +358,7 @@ function Step3({ state, setState }) {
         </div>
       </div>
 
+      {/* Validation warning — rating and visit date are required */}
       {!valid && (
         <div className="flex items-center gap-2 text-sm text-amber-700 bg-amber-50 px-3 py-2 rounded-lg mb-4">
           <AlertTriangle className="w-4 h-4 flex-shrink-0" /> Please add a rating and the date of your visit.
@@ -313,6 +376,11 @@ function Step3({ state, setState }) {
   )
 }
 
+/*
+ * Step4
+ * Shows a full summary of the report for the user to review before submitting.
+ * Displays the venue, rating, date, description, and observed features.
+ */
 function Step4({ state, onSubmit, setState }) {
   const v = state.selectedVenue
   const r = state.report
@@ -325,6 +393,7 @@ function Step4({ state, onSubmit, setState }) {
     <div>
       <h3 className="text-xl font-bold text-gray-900 mb-5">Review your report</h3>
 
+      {/* Venue summary */}
       <div className="mb-4">
         <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">Venue</p>
         <p className="font-semibold text-gray-900">{v.name}</p>
@@ -332,6 +401,7 @@ function Step4({ state, onSubmit, setState }) {
       </div>
       <hr className="border-gray-100 mb-4" />
 
+      {/* Rating and visit date */}
       <div className="grid grid-cols-2 gap-4 mb-4">
         <div>
           <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">Rating</p>
@@ -345,6 +415,7 @@ function Step4({ state, onSubmit, setState }) {
       </div>
       <hr className="border-gray-100 mb-4" />
 
+      {/* Optional description — only shown if the user wrote one */}
       {r.description && (
         <>
           <div className="mb-4">
@@ -355,6 +426,7 @@ function Step4({ state, onSubmit, setState }) {
         </>
       )}
 
+      {/* Accessibility features — present ones coloured, absent ones struck through */}
       <div className="mb-6">
         <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Accessibility observed</p>
         <div className="flex flex-wrap gap-2">
@@ -382,8 +454,7 @@ function Step4({ state, onSubmit, setState }) {
   )
 }
 
-//  Main component 
-
+// Initial state for the form — reused when the user submits and starts again
 const INITIAL_STATE = {
   step: 1, mode: null, selectedVenue: null,
   newVenue: { name: '', area: '', address: '', category: '' },
@@ -396,7 +467,12 @@ export default function ReportForm() {
   const { addReport } = useReports()
   const [state, setState] = useState(INITIAL_STATE)
 
-  // ── Duplicate check handled here ──
+  /*
+   * handleSaveNewVenue
+   * Calls addVenue to save the new venue to localStorage.
+   * If a duplicate is detected, redirects the user to the existing venue
+   * at Step 2 with a warning message instead of creating a duplicate.
+   */
   const handleSaveNewVenue = () => {
     const result = addVenue({
       ...state.newVenue,
@@ -404,7 +480,6 @@ export default function ReportForm() {
     })
 
     if (result.error) {
-      // Duplicate found — switch to existing venue and show warning
       setState(s => ({
         ...s,
         selectedVenue: result.existing,
@@ -418,6 +493,11 @@ export default function ReportForm() {
     setState(s => ({ ...s, selectedVenue: result, step: 3 }))
   }
 
+  /*
+   * handleSubmit
+   * Saves the completed report to localStorage and marks the form as submitted
+   * so the success screen is shown.
+   */
   const handleSubmit = () => {
     addReport({
       venueId: state.selectedVenue.id,
@@ -429,6 +509,7 @@ export default function ReportForm() {
     setState(s => ({ ...s, submitted: true }))
   }
 
+  // Success screen — shown after the report is submitted
   if (state.submitted) {
     return (
       <div className="min-h-screen bg-[#E8F5EC] p-6 flex items-center justify-center">
@@ -439,6 +520,7 @@ export default function ReportForm() {
             Thanks for enlightening others on <span className="font-semibold text-gray-700">{state.selectedVenue?.name}'s</span> accessibility.
           </p>
           <div className='flex gap-2'>
+            {/* Reset the form so the user can submit another report */}
             <button onClick={() => setState(INITIAL_STATE)}
               className="px-3 py-2 bg-[#1B6B3A] text-white rounded-xl font-semibold text-sm hover:bg-[#145A2B] flex items-center gap-2 mx-auto">
               <Plus className="w-4 h-4" /> Submit another report
@@ -456,6 +538,7 @@ export default function ReportForm() {
 
   return (
     <div className="min-h-screen bg-[#E8F5EC] p-6">
+      {/* Page content fades in from below on load */}
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }} className="max-w-3xl mx-auto">
 
@@ -464,7 +547,8 @@ export default function ReportForm() {
 
         <StepBar step={state.step} />
 
-        <div className="bg-white p-8 shadow-sm border border-gray-100">
+        {/* White card containing the current step */}
+        <div className="bg-white p-8 shadow-sm border border-gray-100 rounded-2xl">
           {state.step === 1 && (
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }} className="max-w-3xl mx-auto">
