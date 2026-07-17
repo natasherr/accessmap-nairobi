@@ -6,6 +6,18 @@ import { useReports } from '../hooks/useReports'
 import { BADGES } from '../constants/badges'
 import { motion } from 'framer-motion'
 
+/*
+ * VenueDetail
+ * Shows the full profile of a single venue including its name, address,
+ * area, category, accessibility features, average rating, and all
+ * community reports submitted for that venue.
+ * Also provides buttons to get directions on Google Maps and print the page.
+ *
+ * Route: /venue/:slug
+ * The slug from the URL is used to look up the venue via getVenueBySlug().
+ */
+
+// Maps a numeric star rating to a readable label
 const RATING_LABELS = {
   1: 'Poor',
   2: 'Fair',
@@ -14,6 +26,12 @@ const RATING_LABELS = {
   5: 'Excellent'
 };
 
+/*
+ * Stars
+ * A simple display component that renders a row of star characters.
+ * Filled stars are shown in amber, empty stars in light gray.
+ * Used for both the venue average rating and individual report ratings.
+ */
 function Stars({ rating, size = 'text-lg' }) {
   return (
     <span className={size}>
@@ -34,40 +52,52 @@ function Stars({ rating, size = 'text-lg' }) {
 }
 
 export default function VenueDetail() {
+  // The slug comes from the URL e.g. /venue/kenyatta-national-hospital
   const { id: slug } = useParams()
   const { venues, getVenueBySlug } = useVenues()
-  const { getReportsByVenueId, getAverageRating, reports } = useReports()
+  const { getReportsByVenueId, getAverageRating } = useReports()
 
+  // Holds the venue object once it is found — null while loading
   const [venue, setVenue] = useState(null)
 
+  // Look up the venue by slug whenever the venues list or slug changes
   useEffect(() => {
     if (slug) setVenue(getVenueBySlug(slug))
   }, [venues, slug])
 
+  // Show a loading message while the venue is being fetched
   if (!venue) return (
     <div className="min-h-screen flex items-center justify-center text-gray-400">
       Loading venue...
     </div>
   )
 
+  // Get all reports for this venue, sorted newest first
   const venueReports = getReportsByVenueId(venue.id)
     .sort((a, b) => new Date(b.submittedAt).getTime() - new Date(a.submittedAt).getTime())
+
   const avgRating = getAverageRating(venue.id)
+
+  // Only the badges that are marked true for this venue
   const activeBadges = BADGES.filter(b => venue.accessibility[b.key])
 
+  // Build a Google Maps directions URL using the venue coordinates
   const directionsUrl = venue.coordinates
     ? `https://www.google.com/maps/dir/?api=1&destination=${venue.coordinates.lat},${venue.coordinates.lng}`
     : null
 
   return (
     <div className="min-h-screen bg-[#E8F5EC] p-8">
+      {/* Decorative radial gradients in the background — visual only */}
       <div className="absolute pointer-events-none blur-2xl inset-0 bg-[radial-gradient(circle_at_bottom_left,rgba(27,107,58,0.35),transparent_30%)]"></div>
       <div className="absolute pointer-events-none blur-2xl inset-0 bg-[radial-gradient(circle_at_top_right,rgba(27,66,58,0.35),transparent_30%)]"></div>
+
+      {/* Page content fades in from below on load */}
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }} className="max-w-3xl mx-auto">
         <div className="max-w-3xl mx-auto">
 
-          {/* Header */}
+          {/* Venue header — name, address, area, category, and action buttons */}
           <div className="flex items-start justify-between gap-4 mb-6 flex-wrap print:block">
             <div>
               <h1 className="text-2xl font-bold text-gray-900">{venue.name}</h1>
@@ -76,12 +106,14 @@ export default function VenueDetail() {
               <p className="text-xs text-gray-900 uppercase tracking-wide mt-1">{venue.category}</p>
             </div>
             <div className="flex gap-2 print:hidden">
+              {/* Directions button — only shown if the venue has coordinates */}
               {directionsUrl && (
                 <a href={directionsUrl} target="_blank" rel="noreferrer"
                   className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#1B6B3A] text-white text-sm font-semibold rounded-lg hover:bg-[#FAFAF8] hover:text-gray-900 transition-colors">
                   <MapPin className="w-4 h-4" /> Get directions
                 </a>
               )}
+              {/* Print button — triggers the browser print dialog */}
               <button onClick={() => window.print()}
                 className="inline-flex items-center gap-1.5 px-4 py-2 border border-gray-300 text-sm font-semibold rounded-lg hover:bg-gray-50 transition-colors">
                 <Printer className="w-4 h-4" /> Print
@@ -89,29 +121,29 @@ export default function VenueDetail() {
             </div>
           </div>
 
-          {/* Stats */}
+          {/* Stats row — average rating, report count, and feature count */}
           <div className="grid grid-cols-3 gap-3 mb-6 text-white">
             <div className="bg-[#1B6B3A] rounded-xl p-4 text-center border border-gray-900">
-              <div className="text-4xl font-bold ">{avgRating ?? '—'}</div>
+              <div className="text-4xl font-bold">{avgRating ?? '—'}</div>
               {avgRating ?
                 <Stars rating={avgRating} size="text-base" />
-                : <p className="text-sm  mt-1">No ratings yet</p>
+                : <p className="text-sm mt-1">No ratings yet</p>
               }
-              <p className="text-sm  mt-1">Average rating</p>
+              <p className="text-sm mt-1">Average rating</p>
             </div>
             <div className="bg-[#1B6B3A] rounded-xl p-4 text-center border border-gray-900">
-              <div className="text-4xl font-bold ">{venueReports.length}</div>
-              <p className="text-sm  mt-1">Community report{venueReports.length !== 1 ? 's' : ''}</p>
+              <div className="text-4xl font-bold">{venueReports.length}</div>
+              <p className="text-sm mt-1">Community report{venueReports.length !== 1 ? 's' : ''}</p>
             </div>
             <div className="bg-[#1B6B3A] rounded-xl p-4 text-center border border-gray-900">
-              <div className="text-4xl font-bold ">
-                {activeBadges.length}<span className="text-sm font-normal ">/{BADGES.length}</span>
+              <div className="text-4xl font-bold">
+                {activeBadges.length}<span className="text-sm font-normal">/{BADGES.length}</span>
               </div>
-              <p className="text-sm  mt-1">Accessibility features</p>
+              <p className="text-sm mt-1">Accessibility features</p>
             </div>
           </div>
 
-          {/* Accessibility */}
+          {/* Accessibility features — present badges shown clearly, absent ones struck through */}
           <div className="bg-white rounded-xl p-5 border border-gray-100 mb-6">
             <p className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-3">Accessibility features</p>
             <div className="flex flex-wrap gap-4">
@@ -131,7 +163,7 @@ export default function VenueDetail() {
             </div>
           </div>
 
-          {/* Reports */}
+          {/* Community reports — listed newest first */}
           <p className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-3">Community reports</p>
           {venueReports.length === 0 ? (
             <div className="bg-white rounded-xl p-8 border border-gray-100 text-center text-gray-600 text-sm">
@@ -139,6 +171,7 @@ export default function VenueDetail() {
             </div>
           ) : (
             venueReports.map(r => {
+              // Split badges into present and absent for this report
               const on = BADGES.filter(b => r.accessibility[b.key])
               const off = BADGES.filter(b => !r.accessibility[b.key])
               const dateStr = new Date(r.visitedAt + 'T12:00:00').toLocaleDateString('en-KE', {

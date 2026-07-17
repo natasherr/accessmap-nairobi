@@ -2,21 +2,24 @@ import { SlidersHorizontal, X } from 'lucide-react'
 import { BADGES } from '../constants/badges'
 import { NAIROBI_AREAS } from '../constants/areas'
 
-/**
+/*
  * FilterSidebar
- * Filter panel for the venue directory.
- * Drives filterVenues() in filters.js via the filters state in Directory.jsx.
+ * Shows a panel of filter controls for the venue directory.
+ * When the user changes any filter, the full updated filters object
+ * is passed back to Directory.jsx via the onChange prop, which then
+ * re-runs filterVenues() to update the results.
  *
  * Props:
  *  - filters   {object}    Current filter state owned by Directory.jsx:
  *                          { searchText, area, badges, minRating, sortBy }
  *  - onChange  {function}  Called with the full updated filters object on any change
  *
- * Used by: Directory.jsx (Member B)
- * Imports from Member A: BADGES (constants/badges.js), NAIROBI_AREAS (constants/areas.js)
+ * Used by: Directory.jsx
+ * Imports from: constants/badges.js, constants/areas.js
  */
 
-// These must match the sortBy values in filters.js exactly
+// Sort options shown in the Sort By dropdown.
+// These values must match the sortBy cases in utils/filters.js exactly.
 const SORT_OPTIONS = [
   { value: 'recent',        label: 'Most recently added' },
   { value: 'highest-rated', label: 'Highest rated' },
@@ -24,6 +27,7 @@ const SORT_OPTIONS = [
   { value: 'alphabetical',  label: 'Alphabetical' },
 ]
 
+// Venue categories available in the Category dropdown.
 const CATEGORIES = [
   'hospital',
   'market',
@@ -33,7 +37,8 @@ const CATEGORIES = [
   'other',
 ]
 
-// Default state — must match what Directory.jsx initialises
+// Default filter state — exported so Directory.jsx can reset to these values.
+// Keys must match what filterVenues() in utils/filters.js expects.
 export const DEFAULT_FILTERS = {
   searchText: '',
   area:       'All areas',
@@ -44,12 +49,13 @@ export const DEFAULT_FILTERS = {
 
 export default function FilterSidebar({ filters, onChange }) {
 
-  // Helper: update one key and call onChange with full object
+  // Updates a single filter key while keeping all other keys unchanged.
   function update(key, value) {
     onChange({ ...filters, [key]: value })
   }
 
-  // Toggle a badge key in/out of the badges array
+  // Adds a badge key to the active badges array if it isn't there yet,
+  // or removes it if it already is (toggle behaviour).
   function toggleBadge(key) {
     const already = filters.badges.includes(key)
     const updated = already
@@ -58,7 +64,8 @@ export default function FilterSidebar({ filters, onChange }) {
     update('badges', updated)
   }
 
-  // Count active filters (for the badge shown on mobile toggle)
+  // Count how many filters are currently active.
+  // Used to show a badge number on the mobile filter toggle button.
   const activeCount = [
     filters.area !== 'All areas',
     filters.badges.length > 0,
@@ -72,7 +79,7 @@ export default function FilterSidebar({ filters, onChange }) {
       className="bg-white rounded-2xl border border-gray-100
                  shadow-sm p-5 flex flex-col gap-5"
     >
-      {/* ── Header ── */}
+      {/* Header — shows active filter count and a clear all button */}
       <div className="flex items-center justify-between">
         <h2 className="text-sm font-semibold text-ink flex items-center gap-2">
           <SlidersHorizontal size={15} aria-hidden="true" />
@@ -88,7 +95,7 @@ export default function FilterSidebar({ filters, onChange }) {
           )}
         </h2>
 
-        {/* Clear all — only shows when something is active */}
+        {/* Clear all button — only visible when at least one filter is active */}
         {activeCount > 0 && (
           <button
             type="button"
@@ -104,7 +111,7 @@ export default function FilterSidebar({ filters, onChange }) {
         )}
       </div>
 
-      {/* ── Sort by ── */}
+      {/* Sort by dropdown */}
       <div className="flex flex-col gap-1.5">
         <label
           htmlFor="sort-select"
@@ -129,7 +136,7 @@ export default function FilterSidebar({ filters, onChange }) {
         </select>
       </div>
 
-      {/* ── Area ── */}
+      {/* Area dropdown — filters venues by Nairobi sub-area */}
       <div className="flex flex-col gap-1.5">
         <label
           htmlFor="area-select"
@@ -155,7 +162,7 @@ export default function FilterSidebar({ filters, onChange }) {
         </select>
       </div>
 
-      {/* ── Category ── */}
+      {/* Category dropdown — filters venues by type e.g. hospital, school */}
       <div className="flex flex-col gap-1.5">
         <label
           htmlFor="category-select"
@@ -181,7 +188,7 @@ export default function FilterSidebar({ filters, onChange }) {
         </select>
       </div>
 
-      {/* ── Minimum Rating ── */}
+      {/* Minimum rating slider — 0 means any rating, 5 means 5 stars only */}
       <div className="flex flex-col gap-2">
         <div className="flex items-center justify-between">
           <span
@@ -214,7 +221,8 @@ export default function FilterSidebar({ filters, onChange }) {
         </div>
       </div>
 
-      {/* ── Accessibility Features ── */}
+      {/* Accessibility feature checkboxes — user can select multiple badges to filter by.
+          Only venues that have ALL selected badges will be shown in the results. */}
       <fieldset>
         <legend
           id="features-legend"

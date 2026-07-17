@@ -1,3 +1,23 @@
+/*
+ * seedVenues
+ * Contains 33 real Nairobi venues that are pre-loaded into localStorage
+ * on the user's very first visit to the app.
+ *
+ * Each venue has a unique id, a URL-friendly slug, a name, area, address,
+ * category, and an accessibility object with 8 features marked true or false.
+ *
+ * These venues are loaded once by initStorage() in utils/localStorage.js.
+ * Once seeded, user-submitted venues are added on top of these and the
+ * seed data is never overwritten.
+ *
+ * To add a new venue, copy an existing entry, update all the fields,
+ * and make sure the id and slug are unique.
+ *
+ * Categories used: hospital, market, office, school, transport, bank, other
+ *
+ * Used by: useVenues.js
+ */
+
 export const seedVenues = [
   {
     id: 'v_001',
