@@ -90,11 +90,11 @@ export function isSeeded() {
  * to localStorage and marks the app as seeded so this only runs once.
  * User-submitted data added later is never overwritten by this function.
  */
-export function initStorage(seedVenues) {
+export function initStorage(seedVenues, seedReports) {
   if (isSeeded()) return
 
   saveVenues(seedVenues)
-  saveReports([])
+  saveReports(seedReports)
   saveMeta({
     seeded: true,
     lastUpdated: new Date().toISOString(),
