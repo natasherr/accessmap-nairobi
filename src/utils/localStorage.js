@@ -1,11 +1,19 @@
-// Storage keys — single source of truth
+/*
+ * localStorage.js
+ * Helper functions for reading and writing app data to localStorage.
+ * All venue and report data is stored here since the app has no backend.
+ * Using a single file for all storage operations means there is only
+ * one place to update if the storage keys ever change.
+ */
+
+// The three keys used to store data in localStorage
 export const KEYS = {
   VENUES:  'accessmap_venues',
   REPORTS: 'accessmap_reports',
   META:    'accessmap_meta',
 }
 
-// ── Read ──────────────────────────────────────────────
+// Read all venues from localStorage — returns an empty array if none exist
 export function getVenues() {
   try {
     const data = localStorage.getItem(KEYS.VENUES)
@@ -16,6 +24,7 @@ export function getVenues() {
   }
 }
 
+// Read all reports from localStorage — returns an empty array if none exist
 export function getReports() {
   try {
     const data = localStorage.getItem(KEYS.REPORTS)
@@ -26,6 +35,7 @@ export function getReports() {
   }
 }
 
+// Read the meta object from localStorage — returns an empty object if none exists
 export function getMeta() {
   try {
     const data = localStorage.getItem(KEYS.META)
@@ -36,7 +46,7 @@ export function getMeta() {
   }
 }
 
-// ── Write ─────────────────────────────────────────────
+// Save the full venues array to localStorage
 export function saveVenues(venues) {
   try {
     localStorage.setItem(KEYS.VENUES, JSON.stringify(venues))
@@ -45,6 +55,7 @@ export function saveVenues(venues) {
   }
 }
 
+// Save the full reports array to localStorage
 export function saveReports(reports) {
   try {
     localStorage.setItem(KEYS.REPORTS, JSON.stringify(reports))
@@ -53,6 +64,7 @@ export function saveReports(reports) {
   }
 }
 
+// Save the meta object to localStorage
 export function saveMeta(meta) {
   try {
     localStorage.setItem(KEYS.META, JSON.stringify(meta))
@@ -61,8 +73,7 @@ export function saveMeta(meta) {
   }
 }
 
-// ── Seed check ────────────────────────────────────────
-// Returns true if seed data has already been loaded
+// Returns true if seed data has already been loaded, false otherwise
 export function isSeeded() {
   try {
     const meta = getMeta()
@@ -72,14 +83,18 @@ export function isSeeded() {
   }
 }
 
-// ── Init ──────────────────────────────────────────────
-// Call this once on app startup
-// Loads seed data into localStorage only on first ever visit
-export function initStorage(seedVenues) {
-  if (isSeeded()) return // already seeded — don't overwrite user data
+/*
+ * initStorage
+ * Called once when the app first loads.
+ * If the app has never been opened before, it writes the seed venues
+ * to localStorage and marks the app as seeded so this only runs once.
+ * User-submitted data added later is never overwritten by this function.
+ */
+export function initStorage(seedVenues, seedReports) {
+  if (isSeeded()) return
 
   saveVenues(seedVenues)
-  saveReports([])
+  saveReports(seedReports)
   saveMeta({
     seeded: true,
     lastUpdated: new Date().toISOString(),

@@ -1,18 +1,29 @@
 import { Heart, Share2 } from "lucide-react";
 
+/*
+ * About
+ * Explains the purpose of AccessMap Nairobi, shows disability statistics
+ * from Kenya, outlines how the app works in four steps, and provides
+ * a WhatsApp share button to help spread awareness.
+ *
+ * Route: /about
+ */
 export default function About() {
 
+  // Opens a pre-filled WhatsApp message with the app link in a new tab
   function shareOnWhatsApp() {
     const text = encodeURIComponent("AccessMap Nairobi - Find accessible venues in Nairobi!\n\n" + window.location.origin);
     window.open("https://wa.me/?text=" + text, "_blank");
   }
 
+  // Disability statistics displayed in the Disability in Kenya section
   const stats = [
     { val: "2.2M+",   label: "Kenyans living with a disability (KNBS 2019)" },
     { val: "5.1%",    label: "Of the total population" },
     { val: "1 in 20", label: "Kenyans affected" },
   ];
 
+  // The four steps shown in the How it works section
   const steps = [
     { n: "1", t: "Search", d: "Use the search bar or filter sidebar to find venues in your area of Nairobi." },
     { n: "2", t: "Read",   d: "Open a venue to see its accessibility features and read community reports from real visitors." },
@@ -26,6 +37,7 @@ export default function About() {
       <h1 className="text-3xl font-bold text-ink mb-2">About AccessMap Nairobi</h1>
       <p className="text-gray-500 mb-10">What we are, why we exist, and how to help.</p>
 
+      {/* Mission statement */}
       <section className="mb-10">
         <h2 className="text-lg font-semibold text-forest mb-3">Our Mission</h2>
         <p className="text-gray-600 leading-relaxed">
@@ -39,6 +51,7 @@ export default function About() {
         </p>
       </section>
 
+      {/* Disability statistics from Kenya National Bureau of Statistics */}
       <section className="bg-mint rounded-xl p-6 mb-10">
         <h2 className="text-lg font-semibold text-forest mb-4">Disability in Kenya</h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
@@ -56,6 +69,7 @@ export default function About() {
         </p>
       </section>
 
+      {/* Step by step guide on how to use the app */}
       <section className="mb-10">
         <h2 className="text-lg font-semibold text-forest mb-4">How it works</h2>
         <ol className="space-y-4">
@@ -75,6 +89,7 @@ export default function About() {
         </ol>
       </section>
 
+      {/* WhatsApp share section */}
       <section className="bg-ink text-white rounded-xl p-6 text-center">
         <Heart size={28} className="mx-auto text-amber mb-3" />
         <h2 className="font-bold text-lg mb-2">Help spread the word</h2>

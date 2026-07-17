@@ -11,20 +11,37 @@ import {
   FaArrowUp,
 } from 'react-icons/fa';
 
-// Custom hook to detect scroll position
+/*
+ * useScrollPosition
+ * A custom hook that tracks how far the user has scrolled down the page.
+ * Returns the current vertical scroll position in pixels.
+ * Used to show or hide the back to top button.
+ */
 function useScrollPosition() {
   const [scrollY, setScrollY] = useState(0);
+
   useEffect(() => {
+    // Update scrollY every time the user scrolls
     const handleScroll = () => setScrollY(window.scrollY);
     window.addEventListener('scroll', handleScroll);
+
+    // Clean up the event listener when the component is removed from the page
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
   return scrollY;
 }
 
+/*
+ * Footer
+ * Shown at the bottom of every page.
+ * Contains the brand name, quick navigation links, contact details,
+ * and a back to top button that appears after the user scrolls down 400px.
+ */
 function Footer() {
   const scrollY = useScrollPosition();
 
+  // Smoothly scrolls the page back to the very top
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -37,7 +54,7 @@ function Footer() {
           boxShadow: '0 -10px 30px rgba(0,0,0,0.5)',
         }}
       >
-        {/* Subtle radial glow overlay */}
+        {/* Decorative radial glow in the background — visual only */}
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
@@ -46,13 +63,15 @@ function Footer() {
           }}
         />
 
-        {/* Top decorative border */}
+        {/* Thin amber gradient line along the top edge of the footer */}
         <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-400 via-amber-200 to-amber-400 opacity-70" />
 
         <div className="relative max-w-7xl mx-auto px-6 py-12">
-          {/* Main grid: now 3 columns */}
+
+          {/* Three column grid: brand, quick links, contact */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 mb-10">
-            {/* Brand */}
+
+            {/* Brand section — app name and short description */}
             <div>
               <div className="flex items-center gap-2 mb-3">
                 <FaLeaf className="text-amber-400 text-2xl" />
@@ -66,7 +85,7 @@ function Footer() {
               </p>
             </div>
 
-            {/* Quick Links */}
+            {/* Quick links — each link scrolls to the top of the destination page */}
             <div>
               <h3 className="font-bold text-amber-400 text-lg mb-4 border-b border-white/10 pb-2">
                 Quick Links
@@ -105,7 +124,7 @@ function Footer() {
               </ul>
             </div>
 
-            {/* Contact */}
+            {/* Contact section — location and email address */}
             <div>
               <h3 className="font-bold text-amber-400 text-lg mb-4 border-b border-white/10 pb-2">
                 Contact
@@ -128,10 +147,10 @@ function Footer() {
             </div>
           </div>
 
-          {/* Divider */}
+          {/* Horizontal divider line */}
           <hr className="border-white/10 mb-6" />
 
-          {/* Bottom */}
+          {/* Bottom bar — copyright and credit */}
           <div className="flex flex-col md:flex-row justify-between items-center text-sm text-white/40 gap-2">
             <p>
               © {new Date().getFullYear()} AccessMap Nairobi. All rights
@@ -145,7 +164,8 @@ function Footer() {
         </div>
       </footer>
 
-      {/* Back to Top Button */}
+      {/* Back to top button — fixed at the bottom right of the screen.
+          Only becomes visible after the user scrolls more than 400px down. */}
       <button
         onClick={scrollToTop}
         className={`fixed bottom-8 right-8 z-50 p-3 bg-amber-400 text-gray-900 rounded-full shadow-lg hover:bg-amber-300 transition-all duration-300 ${

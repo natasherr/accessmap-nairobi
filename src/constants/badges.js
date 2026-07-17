@@ -1,3 +1,16 @@
+/*
+ * BADGES
+ * Defines the 8 accessibility features that can be recorded for any venue.
+ * Each badge has a unique key, a display label, an emoji, and a color class.
+ *
+ * - key        matches the field name in the venue and report accessibility objects
+ * - label      shown as text next to the badge in the UI
+ * - emoji      shown as an icon before the label
+ * - colorClass Tailwind classes for the badge background and text color
+ *
+ * Used by: FilterSidebar.jsx, VenueCard.jsx, VenueDetail.jsx,
+ *          ReportForm.jsx, AccessBadge.jsx
+ */
 export const BADGES = [
   {
     key: 'ramp',
@@ -49,8 +62,14 @@ export const BADGES = [
   },
 ]
 
-// Default accessibility object — all false
-// Use this as a template when creating new venues or reports
+/*
+ * DEFAULT_ACCESSIBILITY
+ * A template object with all 8 accessibility features set to false.
+ * Used when creating a new venue or initializing a new report,
+ * so every venue and report always has all 8 keys present.
+ *
+ * Used by: useVenues.js, ReportForm.jsx
+ */
 export const DEFAULT_ACCESSIBILITY = {
   ramp: false,
   lift: false,
